@@ -4,23 +4,18 @@ driver:
 
 provisioner:
   name: chef_zero
-  # You may wish to disable always updating cookbooks in CI or other testing environments.
-  # For example:
-  #   always_update_cookbooks: <%= !ENV['CI'] %>
-  always_update_cookbooks: true
-
-verifier:
-  name: inspec
+  data_bags_path: test/fixtures/data_bags
+  environments_path: test/fixtures/environments
+  nodes_path: test/fixtures/nodes
+  roles_path: test/fixtures/roles
 
 platforms:
   - name: ubuntu-16.04
-  - name: centos-7
-
+    driver_config:
+        network:
+            - ["forwarded_port", {guest: 443, host: 4433}]
 suites:
   - name: default
     run_list:
-      - recipe[ubiquiti_cloud::default]
-    verifier:
-      inspec_tests:
-        - test/integration/default
+      - recipe[ubiquiti_server::default]
     attributes:
